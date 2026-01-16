@@ -31,5 +31,16 @@ export default defineConfig({
     outDir: '../../dist/client',
     emptyOutDir: true,
     sourcemap: true,
+    chunkSizeWarningLimit: 1000, // Antd is large, this is acceptable for internal GUI tool
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-antd': ['antd', '@ant-design/icons'],
+          'vendor-codemirror': ['codemirror', '@codemirror/lang-yaml', '@codemirror/state', '@codemirror/view', '@codemirror/theme-one-dark'],
+          'vendor-i18n': ['i18next', 'react-i18next'],
+        },
+      },
+    },
   },
 });
