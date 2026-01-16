@@ -5,11 +5,11 @@
 
  RUN  v1.6.1 /Users/f.satoshi/Herd/omnify-ts/packages/omnify-core-gui
 
- ✓ src/shared/schemaDefaults.test.ts  (19 tests) 4ms
- ✓ src/shared/validation.test.ts  (62 tests) 9ms
+ ✓ src/shared/schemaDefaults.test.ts  (19 tests) 3ms
+ ✓ src/shared/validation.test.ts  (62 tests) 8ms
 
  Test Files  2 passed (2)
       Tests  81 passed (81)
-   Start at  07:37:52
-   Duration  262ms (transform 68ms, setup 0ms, collect 73ms, tests 13ms, environment 0ms, prepare 160ms)
+   Start at  08:22:08
+   Duration  324ms (transform 64ms, setup 0ms, collect 79ms, tests 11ms, environment 0ms, prepare 168ms)
 
