@@ -1,0 +1,18 @@
+displayName: User Account
+properties:
+  name:
+    type: String
+    length: 22
+  email:
+    type: Email
+    unique: true
+  password:
+    type: Password
+  avatar:
+    type: File
+    nullable: true
+options:
+  id: true
+  idType: BigInt
+  timestamps: true
+  softDelete: true

@@ -1,0 +1,73 @@
+version: 3
+timestamp: "2025-12-28T12:00:00.000Z"
+driver: mysql
+migration: "create_comments_table"
+description: "Added Comment schema with associations"
+changes:
+  - action: schema_added
+    schema: Comment
+  - action: property_modified
+    schema: User
+    property: name
+    from:
+      type: String
+      length: 255
+    to:
+      type: String
+      length: 100
+      displayName: "Full Name"
+snapshot:
+  User:
+    name: User
+    kind: object
+    properties:
+      name:
+        type: String
+        length: 100
+        displayName: "Full Name"
+      email:
+        type: Email
+        unique: true
+    options:
+      id: true
+      idType: BigInt
+      timestamps: true
+  Post:
+    name: Post
+    kind: object
+    properties:
+      title:
+        type: String
+        length: 255
+      content:
+        type: Text
+      status:
+        type: String
+        length: 50
+    options:
+      id: true
+      timestamps: true
+  PostStatus:
+    name: PostStatus
+    kind: enum
+    values:
+      - draft
+      - published
+      - archived
+  Comment:
+    name: Comment
+    kind: object
+    properties:
+      body:
+        type: Text
+      userId:
+        type: BigInt
+        relation: BelongsTo
+        target: User
+      postId:
+        type: BigInt
+        relation: BelongsTo
+        target: Post
+    options:
+      id: true
+      timestamps: true

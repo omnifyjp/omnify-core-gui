@@ -1,0 +1,7 @@
+kind: enum
+displayName: Status Type
+values:
+  - draft
+  - pending
+  - published
+  - archived

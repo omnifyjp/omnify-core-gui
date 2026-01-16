@@ -1,0 +1,37 @@
+version: 1
+timestamp: "2025-12-28T10:00:00.000Z"
+driver: mysql
+migration: "create_users_table"
+description: "Initial schema setup"
+changes:
+  - action: schema_added
+    schema: User
+  - action: schema_added
+    schema: Post
+snapshot:
+  User:
+    name: User
+    kind: object
+    properties:
+      name:
+        type: String
+        length: 255
+      email:
+        type: Email
+        unique: true
+    options:
+      id: true
+      idType: BigInt
+      timestamps: true
+  Post:
+    name: Post
+    kind: object
+    properties:
+      title:
+        type: String
+        length: 255
+      content:
+        type: Text
+    options:
+      id: true
+      timestamps: true

@@ -1,0 +1,94 @@
+{
+  "name": "@famgia/omnify-gui",
+  "version": "1.0.27",
+  "description": "Visual GUI for Omnify schema configuration",
+  "type": "module",
+  "main": "./dist/server/index.js",
+  "types": "./dist/server/index.d.ts",
+  "bin": {
+    "omnify-gui": "./dist/server/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/server/index.d.ts",
+      "import": "./dist/server/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "concurrently \"pnpm dev:server\" \"pnpm dev:client\"",
+    "dev:client": "vite",
+    "dev:server": "tsx watch src/server/index.ts",
+    "build": "pnpm typecheck && pnpm build:client && pnpm build:server",
+    "build:client": "vite build",
+    "build:server": "tsup",
+    "preview": "vite preview",
+    "start": "node dist/server/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist node_modules/.vite",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@codemirror/lang-yaml": "^6.1.2",
+    "@codemirror/state": "^6.5.3",
+    "@codemirror/theme-one-dark": "^6.1.3",
+    "@codemirror/view": "^6.39.8",
+    "@famgia/omnify-cli": "workspace:*",
+    "@famgia/omnify-core": "workspace:*",
+    "@famgia/omnify-laravel": "workspace:*",
+    "@famgia/omnify-sql": "workspace:*",
+    "@famgia/omnify-types": "workspace:*",
+    "chokidar": "^4.0.0",
+    "codemirror": "^6.0.2",
+    "express": "^4.21.0",
+    "i18next": "^25.7.3",
+    "open": "^10.1.0",
+    "react-i18next": "^16.5.0",
+    "ws": "^8.18.0",
+    "yaml": "^2.5.0"
+  },
+  "devDependencies": {
+    "@ant-design/icons": "^5.5.0",
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
+    "@types/express": "^4.17.21",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/ws": "^8.5.12",
+    "@vitejs/plugin-react": "^4.3.0",
+    "antd": "^5.22.0",
+    "concurrently": "^9.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.0.0",
+    "tsup": "^8.0.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.3.3",
+    "vite": "^6.0.0",
+    "vitest": "^1.2.0",
+    "zustand": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@famgia/omnify-core": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/famgia/omnify-ts.git",
+    "directory": "packages/gui"
+  },
+  "keywords": [
+    "omnify",
+    "schema",
+    "gui",
+    "visual-editor",
+    "database",
+    "migration"
+  ],
+  "author": "famgia",
+  "license": "MIT"
+}

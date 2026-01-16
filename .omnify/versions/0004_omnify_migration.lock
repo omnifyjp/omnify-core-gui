@@ -1,0 +1,149 @@
+version: 4
+timestamp: "2026-01-03T09:12:36.368Z"
+driver: mysql
+migration: 20260103091236_omnify_migration
+changes:
+  - action: schema_added
+    schema: Status
+  - action: schema_removed
+    schema: PostStatus
+  - action: schema_removed
+    schema: Comment
+  - action: property_added
+    schema: User
+    property: password
+    to:
+      type: Password
+  - action: property_added
+    schema: User
+    property: avatar
+    to:
+      type: File
+      nullable: true
+  - action: property_modified
+    schema: User
+    property: name
+    from:
+      type: String
+      length: 100
+      displayName: Full Name
+    to:
+      type: String
+      length: 22
+  - action: option_changed
+    schema: User
+    from:
+      id: true
+      idType: BigInt
+      timestamps: true
+    to:
+      id: true
+      idType: BigInt
+      timestamps: true
+      softDelete: true
+  - action: property_added
+    schema: Post
+    property: published
+    to:
+      type: Boolean
+      default: "false"
+  - action: property_added
+    schema: Post
+    property: author
+    to:
+      type: Association
+      relation: ManyToOne
+      target: User
+  - action: property_added
+    schema: Post
+    property: AA
+    to:
+      type: String
+  - action: property_removed
+    schema: Post
+    property: status
+    from:
+      type: String
+      length: 50
+  - action: property_modified
+    schema: Post
+    property: title
+    from:
+      type: String
+      length: 255
+    to:
+      type: String
+  - action: property_modified
+    schema: Post
+    property: content
+    from:
+      type: Text
+    to:
+      type: LongText
+  - action: option_changed
+    schema: Post
+    from:
+      id: true
+      timestamps: true
+    to:
+      id: true
+      idType: BigInt
+      timestamps: true
+      softDelete: false
+snapshot:
+  Post:
+    name: Post
+    kind: object
+    properties:
+      title:
+        type: String
+      content:
+        type: LongText
+      published:
+        type: Boolean
+        default: "false"
+      author:
+        type: Association
+        relation: ManyToOne
+        target: User
+      AA:
+        type: String
+    options:
+      id: true
+      idType: BigInt
+      timestamps: true
+      softDelete: false
+  Status:
+    name: Status
+    kind: enum
+    values:
+      - value: draft
+        label: Nháp
+      - value: pending
+      - value: published
+      - value: archived
+    options:
+      id: true
+      idType: BigInt
+      timestamps: false
+      softDelete: false
+  User:
+    name: User
+    kind: object
+    properties:
+      name:
+        type: String
+        length: 22
+      email:
+        type: Email
+        unique: true
+      password:
+        type: Password
+      avatar:
+        type: File
+        nullable: true
+    options:
+      id: true
+      idType: BigInt
+      timestamps: true
+      softDelete: true

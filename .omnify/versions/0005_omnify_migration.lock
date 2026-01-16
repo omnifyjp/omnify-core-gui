@@ -1,0 +1,111 @@
+version: 5
+timestamp: "2026-01-03T09:44:10.773Z"
+driver: mysql
+migration: 20260103094410_omnify_migration
+changes:
+  - action: property_removed
+    schema: Post
+    property: AA
+    from:
+      type: String
+  - action: option_changed
+    schema: Post
+    from:
+      id: true
+      idType: BigInt
+      timestamps: true
+      softDelete: false
+    to:
+      timestamps: true
+      softDelete: false
+      indexes:
+        - columns:
+            - title
+          unique: false
+        - columns:
+            - content
+            - title
+          unique: true
+          name: unique_0
+  - action: option_changed
+    schema: User
+    from:
+      id: true
+      idType: BigInt
+      timestamps: true
+      softDelete: true
+    to:
+      timestamps: true
+      softDelete: true
+      indexes:
+        - columns:
+            - email
+            - name
+          unique: true
+          type: btree
+snapshot:
+  Post:
+    name: Post
+    kind: object
+    properties:
+      title:
+        type: String
+      content:
+        type: LongText
+      published:
+        type: Boolean
+        default: "false"
+      author:
+        type: Association
+        relation: ManyToOne
+        target: User
+    options:
+      timestamps: true
+      softDelete: false
+      indexes:
+        - columns:
+            - title
+          unique: false
+        - columns:
+            - content
+            - title
+          unique: true
+          name: unique_0
+  Status:
+    name: Status
+    kind: enum
+    values:
+      - value: draft
+        label: Nháp
+      - value: pending
+      - value: published
+      - value: archived
+    options:
+      id: true
+      idType: BigInt
+      timestamps: false
+      softDelete: false
+  User:
+    name: User
+    kind: object
+    properties:
+      name:
+        type: String
+        length: 22
+      email:
+        type: Email
+        unique: true
+      password:
+        type: Password
+      avatar:
+        type: File
+        nullable: true
+    options:
+      timestamps: true
+      softDelete: true
+      indexes:
+        - columns:
+            - email
+            - name
+          unique: true
+          type: btree

@@ -1,0 +1,2590 @@
+version: 7
+timestamp: "2026-01-03T11:54:36.719Z"
+driver: mysql
+migration: 20260103115436_omnify_migration
+changes:
+  - action: schema_added
+    schema: ApplicationForm
+  - action: schema_added
+    schema: ApplicationFormFileType
+  - action: schema_added
+    schema: ApplicationFormInternalComment
+  - action: schema_added
+    schema: ApplicationFormStatusHistory
+  - action: schema_added
+    schema: Asset
+  - action: schema_added
+    schema: AssetCategory
+  - action: schema_added
+    schema: AssetComment
+  - action: schema_added
+    schema: AssetMovement
+  - action: schema_added
+    schema: AssetTemplate
+  - action: schema_added
+    schema: Bank
+  - action: schema_added
+    schema: BankBranch
+  - action: schema_added
+    schema: Comment
+  - action: schema_added
+    schema: CommentTag
+  - action: schema_added
+    schema: Company
+  - action: schema_added
+    schema: ExportJob
+  - action: schema_added
+    schema: FileType
+  - action: schema_added
+    schema: PaymentBrand
+  - action: schema_added
+    schema: Permission
+  - action: schema_added
+    schema: Product
+  - action: schema_added
+    schema: ProductCategory
+  - action: schema_added
+    schema: ProductInventoryMovement
+  - action: schema_added
+    schema: ProductSerialInventory
+  - action: schema_added
+    schema: Shop
+  - action: schema_added
+    schema: Thread
+  - action: schema_added
+    schema: UserGroup
+  - action: schema_removed
+    schema: Post
+  - action: schema_removed
+    schema: Status
+  - action: property_added
+    schema: User
+    property: name_romaji_lastname
+    to:
+      type: String
+      displayName: 名前（ローマ字姓）
+      nullable: true
+      length: 255
+  - action: property_added
+    schema: User
+    property: name_romaji_firstname
+    to:
+      type: String
+      displayName: 名前（ローマ字名）
+      nullable: true
+      length: 255
+  - action: property_added
+    schema: User
+    property: user_group
+    to:
+      type: Association
+      displayName: ユーザーグループ
+      nullable: true
+      relation: ManyToOne
+      target: UserGroup
+      inversedBy: users
+  - action: property_added
+    schema: User
+    property: email_verified_at
+    to:
+      type: Timestamp
+      displayName: メール確認日時
+      nullable: true
+  - action: property_added
+    schema: User
+    property: remember_token
+    to:
+      type: String
+      displayName: リメンバートークン
+      nullable: true
+      length: 100
+  - action: property_added
+    schema: User
+    property: asset_movements
+    to:
+      type: Association
+      displayName: 資産移動履歴
+      relation: OneToMany
+      target: AssetMovement
+      mappedBy: created_by
+  - action: property_added
+    schema: User
+    property: application_form_internal_comments
+    to:
+      type: Association
+      displayName: 作成したコメント
+      relation: OneToMany
+      target: ApplicationFormInternalComment
+      mappedBy: created_by
+  - action: property_added
+    schema: User
+    property: assigned_application_form_comments
+    to:
+      type: Association
+      displayName: 担当コメント
+      relation: OneToMany
+      target: ApplicationFormInternalComment
+      mappedBy: assignee
+  - action: property_removed
+    schema: User
+    property: avatar
+    from:
+      type: File
+      nullable: true
+  - action: property_modified
+    schema: User
+    property: name
+    from:
+      type: String
+      length: 22
+    to:
+      type: JapanPersonName
+      displayName: 名前
+      nullable: false
+  - action: property_modified
+    schema: User
+    property: email
+    from:
+      type: Email
+      unique: true
+    to:
+      type: Email
+      displayName: メールアドレス
+      nullable: false
+  - action: property_modified
+    schema: User
+    property: password
+    from:
+      type: Password
+    to:
+      type: Password
+      displayName: パスワード
+      nullable: false
+      length: 255
+  - action: option_changed
+    schema: User
+    property: authenticatable
+    to: true
+  - action: index_added
+    schema: User
+    to:
+      columns: email
+      unique: true
+      name: unique_0
+  - action: index_removed
+    schema: User
+    from:
+      columns:
+        - email
+        - name
+      unique: true
+      type: btree
+snapshot:
+  ApplicationForm:
+    name: ApplicationForm
+    kind: object
+    properties:
+      form_type:
+        type: String
+        displayName: フォーム種類
+        default: cashless_terminal
+        length: 50
+      form_code:
+        type: String
+        displayName: フォームコード
+        nullable: true
+        unique: true
+        length: 32
+      management_code:
+        type: String
+        displayName: 管理コード
+        nullable: true
+        unique: true
+        length: 20
+      code_e:
+        type: Int
+        displayName: Code E
+        nullable: true
+        unique: true
+      code_b:
+        type: String
+        displayName: Code B
+        nullable: true
+        unique: true
+        length: 50
+      sales_rep:
+        type: Association
+        displayName: 営業担当
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: sales_application_forms
+      shop_code:
+        type: String
+        displayName: 店CD
+        nullable: true
+        length: 50
+      include_mimamori_service:
+        type: Boolean
+        displayName: みまもりサービスを含む
+        nullable: true
+        default: "false"
+      contact_person_name:
+        type: JapanPersonName
+        displayName: ご担当者名
+        nullable: true
+        length: 255
+      contact_person_name_romaji_lastname:
+        type: String
+        displayName: ご担当者名（ローマ字姓）
+        nullable: true
+        length: 255
+      contact_person_name_romaji_firstname:
+        type: String
+        displayName: ご担当者名（ローマ字名）
+        nullable: true
+        length: 255
+      contact_person_phone:
+        type: JapanPhone
+        displayName: ご担当者電話番号
+        nullable: true
+      contact_person_email:
+        type: Text
+        displayName: ご担当者Eメールアドレス
+        nullable: true
+      contact_person_department:
+        type: Text
+        displayName: 担当者部署
+        nullable: true
+      contact_person_address_same_as_company:
+        type: Boolean
+        displayName: 担当者の住所が本社住所と同じ
+        nullable: true
+      contact_person_address_same_as_installation:
+        type: Boolean
+        displayName: 担当者の住所が設置店住所と同じ
+        nullable: true
+      contact_person_address:
+        type: JapanAddress
+        displayName: ご担当者住所
+        nullable: true
+      contact_person_address_address1_kana:
+        type: String
+        displayName: ご担当者住所市区町村（カナ）
+        nullable: true
+        length: 191
+      contact_person_address_address2_kana:
+        type: String
+        displayName: ご担当者住所町域（カナ）
+        nullable: true
+        length: 191
+      contact_person_address_address4:
+        type: String
+        displayName: ご担当者住所建物名及び部屋番号
+        nullable: true
+        length: 191
+      contact_person_address_address4_kana:
+        type: String
+        displayName: ご担当者住所建物名及び部屋番号（カナ）
+        nullable: true
+        length: 191
+      entity_type:
+        type: Enum
+        displayName: 事業者区分
+        nullable: true
+        enum:
+          - value: CORPORATION
+            label: 法人
+          - value: SOLE_PROPRIETOR
+            label: 個人事業主
+      company_type:
+        type: Enum
+        displayName: 会社種類
+        nullable: true
+        enum:
+          - value: KABUSHIKI_KAISHA
+            label: 株式会社
+          - value: YUGEN_KAISHA
+            label: 有限会社
+          - value: GODO_KAISHA
+            label: 合同会社
+          - value: GOSHI_KAISHA
+            label: 合資会社
+          - value: GOMEI_KAISHA
+            label: 合名会社
+          - value: IPPAN_SHADAN_HOJIN
+            label: 一般社団法人
+          - value: IPPAN_ZAIDAN_HOJIN
+            label: 一般財団法人
+          - value: KOEKI_SHADAN_HOJIN
+            label: 公益社団法人
+          - value: KOEKI_ZAIDAN_HOJIN
+            label: 公益財団法人
+          - value: TOKUTEI_HIEIRI_KATSUDO_HOJIN
+            label: 特定非営利活動法人
+          - value: IRYO_HOJIN
+            label: 医療法人
+          - value: GAKKO_HOJIN
+            label: 学校法人
+          - value: SHUKYO_HOJIN
+            label: 宗教法人
+      company_type_position:
+        type: Enum
+        displayName: 会社種類の位置
+        nullable: true
+        enum:
+          - value: PREFIX
+            label: 前置（株式会社〇〇）
+          - value: SUFFIX
+            label: 後置（〇〇株式会社）
+      company_name:
+        type: String
+        displayName: 企業名
+        nullable: true
+        length: 255
+      company_name_kana:
+        type: String
+        displayName: 企業名（カナ）
+        nullable: true
+        length: 255
+      company_name_english:
+        type: String
+        displayName: 事業者名（英語表記）
+        nullable: true
+        length: 255
+      formatted_company_name:
+        type: String
+        displayName: 企業名（法人格付き）
+        nullable: true
+        length: 255
+      formatted_company_name_kana:
+        type: String
+        displayName: 企業名カナ（法人格付き）
+        nullable: true
+        length: 255
+      company_address:
+        type: JapanAddress
+        displayName: 法人住所
+        nullable: true
+      company_address_address1_kana:
+        type: String
+        displayName: 法人住所市区町村（カナ）
+        nullable: true
+        length: 191
+      company_address_address2_kana:
+        type: String
+        displayName: 法人住所町域（カナ）
+        nullable: true
+        length: 191
+      company_address_address4:
+        type: String
+        displayName: 法人住所建物名及び部屋番号
+        nullable: true
+        length: 191
+      company_address_address4_kana:
+        type: String
+        displayName: 法人住所建物名及び部屋番号（カナ）
+        nullable: true
+        length: 191
+      company_phone:
+        type: JapanPhone
+        displayName: 法人電話番号
+        nullable: true
+      corporate_number:
+        type: String
+        displayName: 法人番号（法人マイナンバー）
+        nullable: true
+        length: 13
+      company_establishment_date:
+        type: Date
+        displayName: 法人設立年月日
+        nullable: true
+      annual_sales:
+        type: BigInt
+        displayName: 年商（単位：万円）
+        default: "0"
+      representative_gender:
+        type: Enum
+        displayName: 性別
+        nullable: true
+        enum:
+          - value: MALE
+            label: 男性
+          - value: FEMALE
+            label: 女性
+      representative_name:
+        type: JapanPersonName
+        displayName: 法人代表者名
+        nullable: true
+        length: 255
+      representative_name_romaji_lastname:
+        type: String
+        displayName: 法人代表者名（ローマ字姓）
+        nullable: true
+        length: 255
+      representative_name_romaji_firstname:
+        type: String
+        displayName: 法人代表者名（ローマ字名）
+        nullable: true
+        length: 255
+      representative_birth_date:
+        type: Date
+        displayName: 生年月日
+        nullable: true
+      representative_phone:
+        type: JapanPhone
+        displayName: 代表者電話番号
+        nullable: true
+      representative_address_same_as_company:
+        type: Boolean
+        displayName: 代表者の住所が本社住所と同じ
+        nullable: true
+      representative_address:
+        type: JapanAddress
+        displayName: 代表者住所
+        nullable: true
+      representative_address_address1_kana:
+        type: String
+        displayName: 代表者住所市区町村（カナ）
+        nullable: true
+        length: 191
+      representative_address_address2_kana:
+        type: String
+        displayName: 代表者住所町域（カナ）
+        nullable: true
+        length: 191
+      representative_address_address4:
+        type: String
+        displayName: 代表者住所建物名及び部屋番号
+        nullable: true
+        length: 191
+      representative_address_address4_kana:
+        type: String
+        displayName: 代表者住所建物名及び部屋番号（カナ）
+        nullable: true
+        length: 191
+      installation_shop_name:
+        type: String
+        displayName: 設置店名
+        nullable: true
+        length: 255
+      installation_shop_name_kana:
+        type: String
+        displayName: 設置店名（フリガナ）
+        nullable: true
+        length: 255
+      installation_shop_name_alphabet:
+        type: String
+        displayName: 設置店名（アルファベット）
+        nullable: true
+        length: 255
+      same_address:
+        type: Boolean
+        displayName: 法人住所と同じ
+        nullable: true
+        default: "false"
+      installation_address:
+        type: JapanAddress
+        displayName: 設置店住所
+        nullable: true
+      installation_address_address1_kana:
+        type: String
+        displayName: 設置店住所市区町村（カナ）
+        nullable: true
+        length: 191
+      installation_address_address2_kana:
+        type: String
+        displayName: 設置店住所町域（カナ）
+        nullable: true
+        length: 191
+      installation_address_address4:
+        type: String
+        displayName: 設置店住所建物名及び部屋番号
+        nullable: true
+        length: 191
+      installation_address_address4_kana:
+        type: String
+        displayName: 設置店住所建物名及び部屋番号（カナ）
+        nullable: true
+        length: 191
+      installation_latitude:
+        type: Text
+        displayName: 設置店緯度
+        nullable: true
+      installation_longitude:
+        type: Text
+        displayName: 設置店経度
+        nullable: true
+      installation_phone:
+        type: JapanPhone
+        displayName: 設置店電話番号
+        nullable: true
+      installation_fax:
+        type: JapanPhone
+        displayName: 設置店FAX番号
+        nullable: true
+      business_start_date:
+        type: Date
+        displayName: 設置店営業開始日
+        nullable: true
+      device_quantity:
+        type: Int
+        displayName: 申込台数
+        nullable: true
+      installation_desired_date:
+        type: Date
+        displayName: 導入希望時日
+        nullable: true
+      option_change_machine:
+        type: Boolean
+        displayName: オプション釣銭機
+        nullable: true
+        default: "false"
+      rececon_integration:
+        type: Boolean
+        displayName: レセコン連動
+        nullable: true
+        default: "false"
+      rececon_manufacturer_name:
+        type: String
+        displayName: レセコン連動メーカー名
+        nullable: true
+        length: 255
+      rececon_product_name:
+        type: String
+        displayName: レセコン連動製品名
+        nullable: true
+        length: 255
+      rececon_sips_output_folder_path:
+        type: String
+        displayName: レセコン連動SIPS出力先フォルダパス
+        nullable: true
+        length: 500
+      rececon_output_ip_address:
+        type: String
+        displayName: レセコン連動出力先IPアドレス
+        nullable: true
+        length: 50
+      rececon_system_username:
+        type: String
+        displayName: レセコン連動ユーザー名
+        nullable: true
+        length: 255
+      rececon_system_password:
+        type: String
+        displayName: レセコン連動パスワード
+        nullable: true
+        length: 255
+      rececon_network_diagram:
+        type: MultiFile
+        displayName: レセコン連動ネットワーク図
+        nullable: true
+      rececon_technical_contact_name:
+        type: JapanPersonName
+        displayName: レセコンご担当者名
+        nullable: true
+        length: 255
+      rececon_technical_contact_name_romaji_lastname:
+        type: String
+        displayName: レセコンご担当者名（ローマ字姓）
+        nullable: true
+        length: 255
+      rececon_technical_contact_name_romaji_firstname:
+        type: String
+        displayName: レセコンご担当者名（ローマ字名）
+        nullable: true
+        length: 255
+      rececon_technical_contact_phone:
+        type: JapanPhone
+        displayName: レセコン連動ご担当者電話番号
+        nullable: true
+      rececon_technical_contact_email:
+        type: Text
+        displayName: レセコン連動ご担当者Eメールアドレス
+        nullable: true
+      bank_code:
+        type: String
+        displayName: 金融機関コード（銀行コード）
+        nullable: true
+        length: 4
+      bank_name:
+        type: String
+        displayName: 金融機関名
+        nullable: true
+        length: 255
+      bank_branch_code:
+        type: String
+        displayName: 店番号（支店コード）
+        nullable: true
+        length: 3
+      bank_branch_name:
+        type: String
+        displayName: 支店名
+        nullable: true
+        length: 255
+      account_type:
+        type: Enum
+        displayName: 預金種目
+        nullable: true
+        enum:
+          - value: ORDINARY
+            label: 普通
+          - value: CURRENT
+            label: 当座
+          - value: SAVINGS
+            label: 貯蓄
+      account_number:
+        type: String
+        displayName: 口座番号
+        nullable: true
+        length: 20
+      account_holder:
+        type: String
+        displayName: 口座名義
+        nullable: true
+        length: 255
+      account_holder_kana:
+        type: String
+        displayName: 口座名義（カナ）
+        nullable: true
+        length: 255
+      sme_program_first_contract:
+        type: Boolean
+        displayName: 中小企業優遇料率プログラム - 初めての契約
+        nullable: true
+        default: "false"
+      sme_program_is_sme:
+        type: Boolean
+        displayName: 中小企業優遇料率プログラム - 中小企業該当
+        nullable: true
+        default: "false"
+      sme_program_sales_limit:
+        type: Boolean
+        displayName: 中小企業優遇料率プログラム - 取扱高制限同意
+        nullable: true
+        default: "false"
+      sme_program_monitoring_agreement:
+        type: Boolean
+        displayName: 中小企業優遇料率プログラム - モニタリング同意
+        nullable: true
+        default: "false"
+      sme_program_terms_agreement:
+        type: Boolean
+        displayName: 中小企業優遇料率プログラム - 規約同意
+        nullable: true
+        default: "false"
+      sme_program_application_form:
+        type: MultiFile
+        displayName: 中小企業優遇料率プログラム申込書
+        nullable: true
+      status:
+        type: Enum
+        displayName: ステータス
+        default: APPLICATION_BEFORE_RECEIPT
+        enum:
+          - value: APPLICATION_BEFORE_RECEIPT
+            label: 受領前
+          - value: APPLICATION_UNCONFIRMED
+            label: 確認待ち
+          - value: APPLICATION_CONFIRMED
+            label: 確認済
+          - value: APPLICATION_REJECTED
+            label: 差戻済
+          - value: APPLICATION_CANCELLED
+            label: キャンセル済
+          - value: REVIEW_FORM_NOT_OUTPUT
+            label: 帳票未出力
+          - value: REVIEW_FORM_OUTPUT_COMPLETED
+            label: 帳票出力済
+          - value: REVIEW_UNDER_REVIEW
+            label: 審査中
+          - value: REVIEW_PARTIALLY_COMPLETED
+            label: 一部審査完了
+          - value: REVIEW_ALL_COMPLETED
+            label: 全審査完了
+      terminal_preparation_status:
+        type: Enum
+        displayName: 端末準備ステータス
+        nullable: true
+        enum:
+          - value: ASSIGNED
+            label: 割当済
+          - value: ARRANGED
+            label: 手配済
+          - value: DELIVERED
+            label: 配送済
+          - value: INSTALLED
+            label: 設置済
+      terminal_count:
+        type: Int
+        displayName: 端末割当数
+        default: "0"
+      submitted_at:
+        type: Timestamp
+        displayName: 送信日時
+        nullable: true
+      approved_at:
+        type: Timestamp
+        displayName: 承認日時
+        nullable: true
+      approved_by:
+        type: Association
+        displayName: 承認者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: approved_application_forms
+      rejected_at:
+        type: Timestamp
+        displayName: 拒否日時
+        nullable: true
+      rejected_by:
+        type: Association
+        displayName: 拒否者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: rejected_application_forms
+      rejection_reason:
+        type: Text
+        displayName: 拒否理由
+        nullable: true
+      cancelled_at:
+        type: Timestamp
+        displayName: キャンセル日時
+        nullable: true
+      cancelled_by:
+        type: Association
+        displayName: キャンセル者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: cancelled_application_forms
+      cancellation_reason:
+        type: Text
+        displayName: キャンセル理由
+        nullable: true
+      company:
+        type: Association
+        displayName: 法人
+        nullable: true
+        relation: ManyToOne
+        target: Company
+        inversedBy: application_forms
+      shop:
+        type: Association
+        displayName: 店舗
+        nullable: true
+        relation: ManyToOne
+        target: Shop
+        inversedBy: application_forms
+      is_chain_shop:
+        type: Boolean
+        displayName: JOVY加盟
+        default: "false"
+      draft_data:
+        type: LongText
+        displayName: 下書きデータ
+        nullable: true
+      draft_saved_at:
+        type: Timestamp
+        displayName: 下書き保存日時
+        nullable: true
+      downloaded_at:
+        type: Timestamp
+        displayName: ダウンロード日時
+        nullable: true
+      created_by:
+        type: Association
+        displayName: 作成者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: created_application_forms
+      updated_by:
+        type: Association
+        displayName: 更新者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: updated_application_forms
+      file_types:
+        type: Association
+        displayName: ファイル種類
+        relation: OneToMany
+        target: ApplicationFormFileType
+        mappedBy: application_form
+      assets:
+        type: Association
+        displayName: 資産
+        relation: OneToMany
+        target: Asset
+        mappedBy: application_form
+      asset_movements:
+        type: Association
+        displayName: 資産移動履歴
+        relation: OneToMany
+        target: AssetMovement
+        mappedBy: application_form
+    options:
+      timestamps: false
+      softDelete: true
+  ApplicationFormFileType:
+    name: ApplicationFormFileType
+    kind: object
+    properties:
+      application_form:
+        type: Association
+        displayName: 申込フォーム
+        relation: ManyToOne
+        target: ApplicationForm
+        onDelete: Cascade
+        inversedBy: file_types
+      file_type:
+        type: Association
+        displayName: ファイル種類
+        relation: ManyToOne
+        target: FileType
+        onDelete: Restrict
+        inversedBy: application_forms
+      status:
+        type: Enum
+        displayName: ステータス
+        default: PENDING
+        enum:
+          - value: PENDING
+            label: 審査待ち
+          - value: IN_REVIEW
+            label: 審査中
+          - value: APPROVED
+            label: 承認済
+          - value: REJECTED
+            label: 却下済
+          - value: CANCELLED
+            label: キャンセル済
+      notes:
+        type: Text
+        displayName: 備考
+        nullable: true
+      reviewed_at:
+        type: Timestamp
+        displayName: 審査日時
+        nullable: true
+      reviewed_by:
+        type: Association
+        displayName: 審査者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        onDelete: SetNull
+        inversedBy: reviewed_file_types
+      approved_at:
+        type: Timestamp
+        displayName: 承認日時
+        nullable: true
+      approved_by:
+        type: Association
+        displayName: 承認者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        onDelete: SetNull
+        inversedBy: approved_file_types
+      rejected_at:
+        type: Timestamp
+        displayName: 却下日時
+        nullable: true
+      rejected_by:
+        type: Association
+        displayName: 却下者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        onDelete: SetNull
+        inversedBy: rejected_file_types
+      rejection_reason:
+        type: Text
+        displayName: 却下理由
+        nullable: true
+        length: 5000
+      selected_brand_ids:
+        type: Json
+        displayName: 選択された決済ブランドID
+        nullable: true
+      submitted_at:
+        type: Timestamp
+        displayName: 提出日時
+        nullable: true
+      submitted_by:
+        type: Association
+        displayName: 提出者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        onDelete: SetNull
+        inversedBy: submitted_file_types
+      downloaded_at:
+        type: Timestamp
+        displayName: ダウンロード日時
+        nullable: true
+    options:
+      indexes:
+        - columns:
+            - application_form_id
+        - columns:
+            - file_type_id
+        - columns:
+            - status
+        - columns:
+            - application_form_id
+            - file_type_id
+  ApplicationFormInternalComment:
+    name: ApplicationFormInternalComment
+    kind: object
+    properties:
+      id:
+        type: Id
+        displayName: ID
+      application_form:
+        type: Association
+        displayName: 申込フォーム
+        nullable: false
+        relation: ManyToOne
+        target: ApplicationForm
+        inversedBy: internal_comments
+      content:
+        type: Text
+        displayName: コメント内容
+        nullable: false
+      created_by:
+        type: Association
+        displayName: 作成者
+        nullable: false
+        relation: ManyToOne
+        target: User
+        inversedBy: application_form_internal_comments
+      assignee:
+        type: Association
+        displayName: 担当者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: assigned_application_form_comments
+      due_date:
+        type: Date
+        displayName: 対応期限
+        nullable: true
+      status:
+        type: Enum
+        displayName: 状態
+        nullable: false
+        default: NOT_ADDRESSED
+        enum:
+          - value: NOT_ADDRESSED
+            label: 未対応
+          - value: IN_PROGRESS
+            label: 対応中
+          - value: ADDRESSED
+            label: 対応済
+          - value: COMPLETED
+            label: 完了
+          - value: AUTO
+            label: 自動
+      tags:
+        type: Association
+        displayName: タグ
+        relation: ManyToMany
+        target: CommentTag
+        inversedBy: comments
+  ApplicationFormStatusHistory:
+    name: ApplicationFormStatusHistory
+    kind: object
+    properties:
+      id:
+        type: Id
+        displayName: ID
+      application_form:
+        type: Association
+        displayName: 申込フォーム
+        nullable: false
+        relation: ManyToOne
+        target: ApplicationForm
+        inversedBy: status_histories
+      status:
+        type: Enum
+        displayName: ステータス
+        nullable: false
+        enum:
+          - value: APPLICATION_BEFORE_RECEIPT
+            label: 受領前
+          - value: APPLICATION_UNCONFIRMED
+            label: 確認待ち
+          - value: APPLICATION_CONFIRMED
+            label: 確認済
+          - value: APPLICATION_REJECTED
+            label: 差戻済
+          - value: APPLICATION_CANCELLED
+            label: キャンセル済
+          - value: REVIEW_FORM_NOT_OUTPUT
+            label: 帳票未出力
+          - value: REVIEW_FORM_OUTPUT_COMPLETED
+            label: 帳票出力済
+          - value: REVIEW_UNDER_REVIEW
+            label: 審査中
+          - value: REVIEW_PARTIALLY_COMPLETED
+            label: 一部審査完了
+          - value: REVIEW_ALL_COMPLETED
+            label: 全審査完了
+          - value: TERMINAL_BEFORE_ARRANGEMENT
+            label: 手配前
+          - value: TERMINAL_ARRANGED
+            label: 手配済
+          - value: TERMINAL_DELIVERED
+            label: 配送済
+          - value: TERMINAL_NOT_SET
+            label: 未設定
+          - value: TERMINAL_SET
+            label: 設定済
+          - value: USAGE_BEFORE_USE
+            label: 利用前
+          - value: USAGE_IN_USE
+            label: 利用中
+          - value: USAGE_TERMINATED
+            label: 解約
+          - value: CLOSED_CLOSED
+            label: 終了
+      reason:
+        type: Text
+        displayName: 理由
+        nullable: true
+      performed_by:
+        type: Association
+        displayName: 実行者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: application_form_status_changes
+      performed_at:
+        type: Timestamp
+        displayName: 実行日時
+        nullable: false
+  Asset:
+    name: Asset
+    kind: object
+    properties:
+      asset_code:
+        type: String
+        displayName: 資産管理CD
+        nullable: false
+        unique: true
+        length: 50
+      asset_category:
+        type: Association
+        displayName: 資産カテゴリー
+        nullable: false
+        relation: ManyToOne
+        target: AssetCategory
+        inversedBy: assets
+      product_category:
+        type: Association
+        displayName: 製品カテゴリー
+        nullable: false
+        relation: ManyToOne
+        target: ProductCategory
+        inversedBy: assets
+      asset_template:
+        type: Association
+        displayName: 資産テンプレート
+        nullable: true
+        relation: ManyToOne
+        target: AssetTemplate
+        inversedBy: assets
+      asset_name:
+        type: String
+        displayName: 資産名
+        nullable: false
+        length: 255
+      shop:
+        type: Association
+        displayName: 設置店舗
+        nullable: true
+        relation: ManyToOne
+        target: Shop
+        inversedBy: assets
+      application_form:
+        type: Association
+        displayName: 申込フォーム
+        nullable: true
+        relation: ManyToOne
+        target: ApplicationForm
+        inversedBy: assets
+      price:
+        type: Float
+        displayName: 金額(税別)
+        nullable: true
+      purchase_date:
+        type: Date
+        displayName: 購入日
+        nullable: true
+      installation_date:
+        type: Date
+        displayName: 導入日
+        nullable: true
+      location:
+        type: String
+        displayName: ロケーション
+        nullable: true
+        length: 100
+      receipt_status:
+        type: Enum
+        displayName: 受領ステータス
+        nullable: false
+        default: PENDING
+        enum:
+          - value: PENDING
+            label: 未受領
+          - value: RECEIVED
+            label: 受領済
+          - value: RETURNED
+            label: 返却済
+      sales_person_name:
+        type: String
+        displayName: 営業担当名
+        nullable: true
+        length: 100
+      status:
+        type: Enum
+        displayName: ステータス
+        nullable: false
+        default: IN_STOCK
+        enum:
+          - value: IN_STOCK
+            label: 在庫中
+          - value: SHIPPED
+            label: 発送済
+          - value: IN_USE
+            label: 利用中
+          - value: RETURNED
+            label: 返却済
+          - value: MAINTENANCE
+            label: メンテナンス中
+          - value: RETIRED
+            label: 廃棄済
+      accounting_code:
+        type: String
+        displayName: 会計管理CD
+        nullable: true
+        length: 50
+      remarks:
+        type: Text
+        displayName: 備考
+        nullable: true
+      approval_status:
+        type: Enum
+        displayName: 承認ステータス
+        nullable: true
+        enum:
+          - value: PENDING
+            label: 承認待ち
+          - value: APPROVED
+            label: 承認済
+          - value: REJECTED
+            label: 差し戻し
+      approval_requested_at:
+        type: Timestamp
+        displayName: 承認申請日
+        nullable: true
+      approval_requested_by:
+        type: Association
+        displayName: 申請者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: approval_requested_assets
+      approved_at:
+        type: Timestamp
+        displayName: 承認日
+        nullable: true
+      approved_by:
+        type: Association
+        displayName: 承認者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: approved_assets
+      rejection_reason:
+        type: Text
+        displayName: 差戻理由
+        nullable: true
+      products:
+        type: Association
+        displayName: 商品（数量管理）
+        relation: ManyToMany
+        target: Product
+        inversedBy: assets
+      serial_inventories:
+        type: Association
+        displayName: シリアル在庫
+        relation: ManyToMany
+        target: ProductSerialInventory
+        inversedBy: assets
+      movements:
+        type: Association
+        displayName: 移動履歴
+        relation: OneToMany
+        target: AssetMovement
+        mappedBy: asset
+  AssetCategory:
+    name: AssetCategory
+    kind: object
+    properties:
+      code:
+        type: String
+        displayName: カテゴリーコード
+        unique: true
+        length: 10
+      name:
+        type: String
+        displayName: カテゴリー名
+        length: 255
+      sort_order:
+        type: Int
+        displayName: 並び順
+        default: "0"
+  AssetComment:
+    name: AssetComment
+    kind: object
+    properties:
+      asset:
+        type: Association
+        displayName: 資産
+        nullable: false
+        relation: ManyToOne
+        target: Asset
+        inversedBy: comments
+      content:
+        type: Text
+        displayName: メモ内容
+        nullable: false
+      created_by:
+        type: Association
+        displayName: 作成者
+        nullable: false
+        relation: ManyToOne
+        target: User
+        inversedBy: asset_comments
+  AssetMovement:
+    name: AssetMovement
+    kind: object
+    properties:
+      asset:
+        type: Association
+        displayName: 資産
+        nullable: false
+        relation: ManyToOne
+        target: Asset
+        onDelete: Cascade
+        inversedBy: movements
+      movement_type:
+        type: Enum
+        displayName: 移動種別
+        nullable: false
+        enum:
+          - value: CREATED
+            label: 登録
+          - value: SHIPPED
+            label: 発送
+          - value: ASSIGNED
+            label: 割当
+          - value: TRANSFERRED
+            label: 移動
+          - value: RETURNED
+            label: 返却
+          - value: MAINTENANCE
+            label: メンテナンス
+          - value: RETIRED
+            label: 廃棄
+          - value: APPROVAL_REQUESTED
+            label: 承認依頼
+          - value: APPROVED
+            label: 承認済
+          - value: REJECTED
+            label: 差し戻し
+      from_shop:
+        type: Association
+        displayName: 移動元店舗
+        nullable: true
+        relation: ManyToOne
+        target: Shop
+        inversedBy: asset_movements_from
+      to_shop:
+        type: Association
+        displayName: 移動先店舗
+        nullable: true
+        relation: ManyToOne
+        target: Shop
+        inversedBy: asset_movements_to
+      from_status:
+        type: String
+        displayName: 移動前ステータス
+        nullable: true
+        length: 50
+      to_status:
+        type: String
+        displayName: 移動後ステータス
+        nullable: true
+        length: 50
+      application_form:
+        type: Association
+        displayName: 関連申込
+        nullable: true
+        relation: ManyToOne
+        target: ApplicationForm
+        inversedBy: asset_movements
+      shipping_carrier:
+        type: String
+        displayName: 配送業者
+        nullable: true
+        length: 100
+      tracking_number:
+        type: String
+        displayName: 追跡番号
+        nullable: true
+        length: 100
+      remarks:
+        type: Text
+        displayName: 備考
+        nullable: true
+      movement_date:
+        type: Date
+        displayName: 移動日
+        nullable: false
+      created_by:
+        type: Association
+        displayName: 登録者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        onDelete: SetNull
+        inversedBy: asset_movements
+  AssetTemplate:
+    name: AssetTemplate
+    kind: object
+    properties:
+      name:
+        type: String
+        displayName: テンプレート名
+        nullable: false
+        length: 255
+      asset_category:
+        type: String
+        displayName: 資産カテゴリー
+        nullable: true
+        length: 100
+      product_category:
+        type: String
+        displayName: 製品カテゴリー
+        nullable: true
+        length: 100
+      asset_name:
+        type: String
+        displayName: 資産名
+        nullable: false
+        length: 255
+      price:
+        type: Float
+        displayName: 金額(税別)
+        nullable: true
+      products:
+        type: Association
+        displayName: バンドルセット内容
+        relation: ManyToMany
+        target: Product
+        inversedBy: asset_templates
+      assets:
+        type: Association
+        displayName: 資産
+        relation: OneToMany
+        target: Asset
+        mappedBy: asset_template
+  Bank:
+    name: Bank
+    kind: object
+    properties:
+      code:
+        type: String
+        displayName: 金融機関コード
+        nullable: false
+        unique: true
+        length: 4
+      name:
+        type: String
+        displayName: 金融機関名
+        nullable: false
+        length: 255
+      kana:
+        type: String
+        displayName: 金融機関名カナ
+        nullable: true
+        length: 255
+  BankBranch:
+    name: BankBranch
+    kind: object
+    properties:
+      bank:
+        type: Association
+        displayName: 金融機関
+        relation: ManyToOne
+        target: Bank
+        inversedBy: branches
+      code:
+        type: String
+        displayName: 支店コード
+        length: 3
+      name:
+        type: String
+        displayName: 支店名
+        length: 255
+      kana:
+        type: String
+        displayName: 支店名カナ
+        nullable: true
+        length: 255
+    options:
+      idType: Int
+  Comment:
+    name: Comment
+    kind: object
+    properties:
+      id:
+        type: Id
+        displayName: ID
+      thread:
+        type: Association
+        displayName: スレッド
+        nullable: false
+        relation: ManyToOne
+        target: Thread
+        inversedBy: comments
+      content:
+        type: Text
+        displayName: コメント内容
+        nullable: false
+      created_by:
+        type: Association
+        displayName: 作成者
+        nullable: false
+        relation: ManyToOne
+        target: User
+        inversedBy: thread_comments
+  CommentTag:
+    name: CommentTag
+    kind: object
+    properties:
+      id:
+        type: Id
+        displayName: ID
+      name:
+        type: String
+        displayName: タグ名
+        nullable: false
+        length: 50
+      color:
+        type: String
+        displayName: 色
+        nullable: true
+        length: 20
+      sort_order:
+        type: Int
+        displayName: 表示順
+        nullable: false
+        default: 0
+      comments:
+        type: Association
+        displayName: 申込フォームコメント
+        relation: ManyToMany
+        target: ApplicationFormInternalComment
+        mappedBy: tags
+      threads:
+        type: Association
+        displayName: スレッド
+        relation: ManyToMany
+        target: Thread
+        mappedBy: tags
+  Company:
+    name: Company
+    kind: object
+    properties:
+      entity_type:
+        type: Enum
+        displayName: 事業者区分
+        nullable: false
+        enum:
+          - value: CORPORATION
+            label: 法人
+          - value: SOLE_PROPRIETOR
+            label: 個人事業主
+      code:
+        type: String
+        displayName: 取引先コード
+        nullable: false
+        unique: true
+        length: 255
+      valid_from:
+        type: Timestamp
+        displayName: この範囲から有効な日時
+        nullable: true
+      valid_to:
+        type: Timestamp
+        displayName: この範囲まで有効な日時
+        nullable: true
+      company_name:
+        type: String
+        displayName: 企業名
+        nullable: false
+        length: 255
+      company_type:
+        type: Enum
+        displayName: 会社種類
+        nullable: true
+        enum:
+          - value: KABUSHIKI_KAISHA
+            label: 株式会社
+          - value: YUGEN_KAISHA
+            label: 有限会社
+          - value: GODO_KAISHA
+            label: 合同会社
+          - value: GOSHI_KAISHA
+            label: 合資会社
+          - value: GOMEI_KAISHA
+            label: 合名会社
+          - value: IPPAN_SHADAN_HOJIN
+            label: 一般社団法人
+          - value: IPPAN_ZAIDAN_HOJIN
+            label: 一般財団法人
+          - value: KOEKI_SHADAN_HOJIN
+            label: 公益社団法人
+          - value: KOEKI_ZAIDAN_HOJIN
+            label: 公益財団法人
+          - value: TOKUTEI_HIEIRI_KATSUDO_HOJIN
+            label: 特定非営利活動法人
+          - value: IRYO_HOJIN
+            label: 医療法人
+          - value: GAKKO_HOJIN
+            label: 学校法人
+          - value: SHUKYO_HOJIN
+            label: 宗教法人
+      company_type_position:
+        type: Enum
+        displayName: 会社種類の位置
+        nullable: true
+        enum:
+          - value: PREFIX
+            label: 前置（株式会社〇〇）
+          - value: SUFFIX
+            label: 後置（〇〇株式会社）
+      company_name_kana:
+        type: String
+        displayName: 企業名（カナ）
+        nullable: true
+        length: 255
+      formatted_company_name:
+        type: String
+        displayName: 企業名（法人格付き）
+        nullable: true
+        length: 255
+      formatted_company_name_kana:
+        type: String
+        displayName: 企業名カナ（法人格付き）
+        nullable: true
+        length: 255
+      company_name_english:
+        type: String
+        displayName: 事業者名（英語表記）
+        nullable: true
+        length: 255
+      representative_name:
+        type: JapanPersonName
+        displayName: 代表者名
+        nullable: true
+        length: 255
+      representative_name_romaji_lastname:
+        type: String
+        displayName: 代表者名（ローマ字姓）
+        nullable: true
+        length: 255
+      representative_name_romaji_firstname:
+        type: String
+        displayName: 代表者名（ローマ字名）
+        nullable: true
+        length: 255
+      representative_name_kana:
+        type: String
+        displayName: 代表者名（カナ）
+        nullable: true
+        length: 255
+      representative_birth_date:
+        type: Date
+        displayName: 代表者生年月日
+        nullable: true
+      representative_phone:
+        type: JapanPhone
+        displayName: 代表者電話番号
+        nullable: true
+      representative_address:
+        type: JapanAddress
+        displayName: 代表者住所
+        nullable: true
+      representative_address_address1_kana:
+        type: String
+        displayName: 代表者住所市区町村（カナ）
+        nullable: true
+        length: 191
+      representative_address_address2_kana:
+        type: String
+        displayName: 代表者住所町域（カナ）
+        nullable: true
+        length: 191
+      representative_address_address4:
+        type: String
+        displayName: 代表者住所建物名及び部屋番号
+        nullable: true
+        length: 191
+      representative_address_address4_kana:
+        type: String
+        displayName: 代表者住所建物名及び部屋番号（カナ）
+        nullable: true
+        length: 191
+      address:
+        type: JapanAddress
+        displayName: 住所
+        nullable: true
+      address_address1_kana:
+        type: String
+        displayName: 住所市区町村（カナ）
+        nullable: true
+        length: 191
+      address_address2_kana:
+        type: String
+        displayName: 住所町域（カナ）
+        nullable: true
+        length: 191
+      address_address4:
+        type: String
+        displayName: 住所建物名及び部屋番号
+        nullable: true
+        length: 191
+      address_address4_kana:
+        type: String
+        displayName: 住所建物名及び部屋番号（カナ）
+        nullable: true
+        length: 191
+      main_phone_number:
+        type: JapanPhone
+        displayName: 代表電話番号
+        nullable: true
+      main_fax_number:
+        type: JapanPhone
+        displayName: 代表FAX番号
+        nullable: true
+      website_url:
+        type: String
+        displayName: ウェブサイトURL
+        nullable: true
+        length: 255
+      establishment_date:
+        type: Date
+        displayName: 設立年月日
+        nullable: true
+      capital:
+        type: BigInt
+        displayName: 資本金
+        nullable: true
+      number_of_employees:
+        type: Int
+        displayName: 従業員数
+        nullable: true
+      industries:
+        type: String
+        displayName: 業種（業界、事業）
+        nullable: true
+        length: 255
+      fiscal_month:
+        type: Int
+        displayName: 決算月
+        nullable: true
+      business_description:
+        type: Text
+        displayName: 事業内容
+        nullable: true
+      jsc_major_code:
+        type: String
+        displayName: 日本標準産業分類（大分類）コード
+        nullable: true
+        length: 255
+      jsc_major_name:
+        type: String
+        displayName: 日本標準産業分類（大分類）名称
+        nullable: true
+        length: 255
+      jsc_medium_code:
+        type: String
+        displayName: 日本標準産業分類（中分類）コード
+        nullable: true
+        length: 255
+      jsc_medium_name:
+        type: String
+        displayName: 日本標準産業分類（中分類）名称
+        nullable: true
+        length: 255
+      corporate_number:
+        type: String
+        displayName: 法人番号（法人マイナンバー）
+        nullable: true
+        length: 13
+      ldcc_code:
+        type: String
+        displayName: 企業サージャの企業コード
+        nullable: true
+        length: 9
+      lsr_code:
+        type: String
+        displayName: 東京商工リサーチの企業コード
+        nullable: true
+        length: 255
+      duns_number:
+        type: String
+        displayName: Dun & Bradstreetの企業コード
+        nullable: true
+        length: 9
+      transaction_start_date:
+        type: Date
+        displayName: 取引開始日
+        nullable: true
+      transaction_end_date:
+        type: Date
+        displayName: 取引終了日
+        nullable: true
+      transaction_status:
+        type: String
+        displayName: 取引ステータス
+        nullable: true
+        length: 255
+      credit_limit:
+        type: BigInt
+        displayName: 信用限度額
+        nullable: true
+      evaluation_terms:
+        type: String
+        displayName: 支払条件
+        nullable: true
+        length: 255
+      our_department:
+        type: String
+        displayName: 自社担当部署
+        nullable: true
+        length: 255
+      our_contact_person:
+        type: JapanPersonName
+        displayName: 自社担当者
+        nullable: true
+        length: 255
+      our_contact_person_romaji_lastname:
+        type: String
+        displayName: 自社担当者（ローマ字姓）
+        nullable: true
+        length: 255
+      our_contact_person_romaji_firstname:
+        type: String
+        displayName: 自社担当者（ローマ字名）
+        nullable: true
+        length: 255
+      contact_name:
+        type: JapanPersonName
+        displayName: 名前
+        nullable: true
+        length: 255
+      contact_name_romaji_lastname:
+        type: String
+        displayName: 名前（ローマ字姓）
+        nullable: true
+        length: 255
+      contact_name_romaji_firstname:
+        type: String
+        displayName: 名前（ローマ字名）
+        nullable: true
+        length: 255
+      contact_name_kana:
+        type: String
+        displayName: 名前（カナ）
+        nullable: true
+        length: 255
+      department:
+        type: String
+        displayName: 部署
+        nullable: true
+        length: 255
+      title:
+        type: String
+        displayName: 役職
+        nullable: true
+        length: 255
+      phone_number:
+        type: String
+        displayName: 電話番号
+        nullable: true
+        length: 255
+      email:
+        type: String
+        displayName: メールアドレス
+        nullable: true
+        length: 255
+      notes:
+        type: Text
+        displayName: 備考
+        nullable: true
+      holding_code:
+        type: String
+        displayName: 親会社コード
+        nullable: true
+        unique: true
+        length: 10
+      holding:
+        type: Association
+        displayName: ホールディングス（親会社）
+        nullable: true
+        relation: ManyToOne
+        target: Company
+        inversedBy: subsidiaries
+      created_by:
+        type: Association
+        displayName: レコード作成者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: created_companies
+      updated_by:
+        type: Association
+        displayName: レコード更新者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: updated_companies
+  ExportJob:
+    name: ExportJob
+    kind: object
+    properties:
+      user:
+        type: Association
+        displayName: ユーザー
+        nullable: false
+        relation: ManyToOne
+        target: User
+        inversedBy: export_jobs
+      type:
+        type: Enum
+        displayName: 種類
+        nullable: false
+        enum:
+          - value: BULK_APPLICATION_FORMS
+            label: 一括申込フォーム
+      status:
+        type: Enum
+        displayName: ステータス
+        nullable: false
+        default: PENDING
+        enum:
+          - value: PENDING
+            label: 待機中
+          - value: PROCESSING
+            label: 処理中
+          - value: COMPLETED
+            label: 完了
+          - value: FAILED
+            label: 失敗
+      progress:
+        type: Int
+        displayName: 進捗
+        nullable: false
+        default: 0
+      total_items:
+        type: Int
+        displayName: 合計アイテム数
+        nullable: true
+      processed_items:
+        type: Int
+        displayName: 処理済みアイテム数
+        nullable: false
+        default: 0
+      file_path:
+        type: String
+        displayName: ファイルパス
+        nullable: true
+        length: 500
+      file_name:
+        type: String
+        displayName: ファイル名
+        nullable: true
+        length: 255
+      file_size:
+        type: BigInt
+        displayName: ファイルサイズ
+        nullable: true
+      error_message:
+        type: Text
+        displayName: エラーメッセージ
+        nullable: true
+      expires_at:
+        type: Timestamp
+        displayName: 有効期限
+        nullable: false
+      metadata:
+        type: Json
+        displayName: メタデータ
+        nullable: true
+  FileType:
+    name: FileType
+    kind: object
+    properties:
+      code:
+        type: String
+        displayName: コード
+        nullable: false
+        length: 10
+      name:
+        type: String
+        displayName: 名称
+        nullable: false
+        length: 255
+      description:
+        type: Text
+        displayName: 説明
+        nullable: true
+      sort_order:
+        type: Int
+        displayName: 表示順
+        nullable: false
+        default: 0
+      enabled:
+        type: Boolean
+        displayName: 有効フラグ
+        nullable: false
+        default: true
+      payment_brands:
+        type: Association
+        displayName: 決済ブランド
+        relation: OneToMany
+        target: PaymentBrand
+        mappedBy: file_type
+      application_forms:
+        type: Association
+        displayName: 申込フォーム
+        relation: OneToMany
+        target: ApplicationFormFileType
+        mappedBy: file_type
+    options:
+      indexes:
+        - {}
+  PaymentBrand:
+    name: PaymentBrand
+    kind: object
+    properties:
+      name:
+        type: String
+        displayName: ブランド名
+        nullable: false
+        length: 100
+      category:
+        type: Enum
+        displayName: カテゴリ
+        nullable: false
+        enum:
+          - value: credit
+            label: クレジット
+          - value: emoney
+            label: 電子マネー
+          - value: qrcode
+            label: コード決済
+      file_type:
+        type: Association
+        displayName: ファイル種類
+        nullable: true
+        relation: ManyToOne
+        target: FileType
+        onDelete: Restrict
+        inversedBy: payment_brands
+      description:
+        type: Text
+        displayName: 説明
+        nullable: true
+      enabled:
+        type: Boolean
+        displayName: 有効フラグ
+        nullable: false
+        default: true
+      sort_order:
+        type: Int
+        displayName: 表示順
+        nullable: false
+        default: 0
+    options:
+      indexes:
+        - {}
+        - {}
+        - {}
+  Permission:
+    name: Permission
+    kind: object
+    properties:
+      code:
+        type: String
+        displayName: 権限コード
+        nullable: false
+        unique: true
+        length: 50
+      name:
+        type: String
+        displayName: 権限名
+        nullable: false
+        length: 255
+      description:
+        type: String
+        displayName: 説明
+        nullable: true
+        length: 500
+      category:
+        type: String
+        displayName: カテゴリ
+        nullable: true
+        length: 100
+      user_groups:
+        type: Association
+        displayName: ユーザーグループ
+        relation: ManyToMany
+        target: UserGroup
+        inversedBy: permissions
+      users:
+        type: Association
+        displayName: ユーザー
+        relation: ManyToMany
+        target: User
+        inversedBy: permissions
+  Product:
+    name: Product
+    kind: object
+    properties:
+      sku:
+        type: String
+        displayName: 商品コード (SKU)
+        nullable: false
+        unique: true
+        length: 50
+      name:
+        type: String
+        displayName: 商品名
+        nullable: false
+        length: 255
+      model_number:
+        type: String
+        displayName: 型式/型番
+        nullable: true
+        length: 100
+      remarks:
+        type: Text
+        displayName: 備考
+        nullable: true
+      price:
+        type: Float
+        displayName: 金額(税別)
+        nullable: true
+      tracked_by_serial:
+        type: Boolean
+        displayName: シリアル管理
+        nullable: false
+        default: false
+      initial_stock:
+        type: Int
+        displayName: 初期在庫
+        nullable: true
+      quantity:
+        type: Int
+        displayName: 在庫数量
+        nullable: true
+      jovy_hq_stock:
+        type: Int
+        displayName: ジョヴィ本部在庫
+        nullable: true
+      asset_templates:
+        type: Association
+        displayName: 資産テンプレート
+        relation: ManyToMany
+        target: AssetTemplate
+        mappedBy: products
+      assets:
+        type: Association
+        displayName: 資産
+        relation: ManyToMany
+        target: Asset
+        mappedBy: products
+      inventory_movements:
+        type: Association
+        displayName: 入出庫履歴
+        relation: OneToMany
+        target: ProductInventoryMovement
+        mappedBy: product
+  ProductCategory:
+    name: ProductCategory
+    kind: object
+    properties:
+      code:
+        type: String
+        displayName: カテゴリーコード
+        nullable: false
+        unique: true
+        length: 10
+      name:
+        type: String
+        displayName: カテゴリー名
+        nullable: false
+        length: 255
+      sort_order:
+        type: Int
+        displayName: 並び順
+        nullable: false
+        default: 0
+      assets:
+        type: Association
+        displayName: 資産
+        relation: OneToMany
+        target: Asset
+        mappedBy: product_category
+  ProductInventoryMovement:
+    name: ProductInventoryMovement
+    kind: object
+    properties:
+      product:
+        type: Association
+        displayName: 商品
+        nullable: false
+        relation: ManyToOne
+        target: Product
+        onDelete: Cascade
+        inversedBy: inventory_movements
+      movement_type:
+        type: Enum
+        displayName: 移動種別
+        nullable: false
+        enum:
+          - value: INITIAL
+            label: 初期在庫
+          - value: IN
+            label: 入庫
+          - value: OUT
+            label: 出庫
+          - value: ADJUSTMENT_PLUS
+            label: 棚卸増
+          - value: ADJUSTMENT_MINUS
+            label: 棚卸減
+      quantity:
+        type: Int
+        displayName: 数量
+        nullable: false
+      stock_before:
+        type: Int
+        displayName: 移動前在庫
+        nullable: false
+      stock_after:
+        type: Int
+        displayName: 移動後在庫
+        nullable: false
+      reference_type:
+        type: String
+        displayName: 参照元種別
+        nullable: true
+        length: 50
+      reference_id:
+        type: Int
+        displayName: 参照元ID
+        nullable: true
+      remarks:
+        type: Text
+        displayName: 備考
+        nullable: true
+      movement_date:
+        type: Date
+        displayName: 移動日
+        nullable: false
+      created_by:
+        type: Association
+        displayName: 登録者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        onDelete: SetNull
+        inversedBy: created_product_inventory_movements
+  ProductSerialInventory:
+    name: ProductSerialInventory
+    kind: object
+    properties:
+      serial_number:
+        type: String
+        displayName: シリアル番号
+        nullable: false
+        unique: true
+        length: 100
+      box_number:
+        type: String
+        displayName: 段ボールNo
+        nullable: true
+        length: 50
+      asset_code:
+        type: String
+        displayName: 資産管理CD
+        nullable: true
+        unique: true
+        length: 50
+      status:
+        type: Enum
+        displayName: ステータス
+        nullable: false
+        default: IN_STOCK
+        enum:
+          - value: IN_STOCK
+            label: 在庫中
+          - value: ASSIGNED
+            label: 割当済
+          - value: IN_USE
+            label: 使用中
+          - value: MAINTENANCE
+            label: メンテナンス中
+          - value: RETURNED
+            label: 返却済
+          - value: RETIRED
+            label: 廃棄
+      product:
+        type: Association
+        displayName: 商品
+        nullable: false
+        relation: ManyToOne
+        target: Product
+        inversedBy: serial_inventories
+      shop:
+        type: Association
+        displayName: 店舗
+        nullable: true
+        relation: ManyToOne
+        target: Shop
+        inversedBy: serial_inventories
+      application_form:
+        type: Association
+        displayName: 申込フォーム
+        nullable: true
+        relation: ManyToOne
+        target: ApplicationForm
+        inversedBy: serial_inventories
+      sales_person_name:
+        type: String
+        displayName: 営業担当名
+        nullable: true
+        length: 255
+      shop_code:
+        type: String
+        displayName: 設置店CD
+        nullable: true
+        length: 50
+      accounting_code:
+        type: String
+        displayName: 会計管理CD
+        nullable: true
+        length: 50
+      purchase_date:
+        type: Date
+        displayName: 購入日
+        nullable: true
+      installation_date:
+        type: Date
+        displayName: 導入日
+        nullable: true
+      price:
+        type: Float
+        displayName: 金額(税別)
+        nullable: true
+      updated_info_date:
+        type: Timestamp
+        displayName: 情報更新日
+        nullable: true
+      assets:
+        type: Association
+        displayName: 資産
+        relation: ManyToMany
+        target: Asset
+        mappedBy: serial_inventories
+  Shop:
+    name: Shop
+    kind: object
+    properties:
+      code:
+        type: BigInt
+        displayName: 店舗コード
+        nullable: false
+        unique: true
+      name:
+        type: String
+        displayName: 店舗名
+        nullable: true
+        length: 255
+      name_kana:
+        type: String
+        displayName: 店舗名（カナ）
+        nullable: true
+        length: 255
+      name_alphabet:
+        type: String
+        displayName: 店舗名（アルファベット）
+        nullable: true
+        length: 255
+      tel:
+        type: JapanPhone
+        displayName: 電話番号
+        nullable: true
+      fax:
+        type: JapanPhone
+        displayName: FAX番号
+        nullable: true
+      email:
+        type: Email
+        displayName: メールアドレス
+        nullable: true
+      address:
+        type: JapanAddress
+        displayName: 住所
+        nullable: true
+      address_address1_kana:
+        type: String
+        displayName: 住所市区町村（カナ）
+        nullable: true
+        length: 191
+      address_address2_kana:
+        type: String
+        displayName: 住所町域（カナ）
+        nullable: true
+        length: 191
+      address_address4:
+        type: String
+        displayName: 住所建物名及び部屋番号
+        nullable: true
+        length: 191
+      address_address4_kana:
+        type: String
+        displayName: 住所建物名及び部屋番号（カナ）
+        nullable: true
+        length: 191
+      business_start_date:
+        type: Date
+        displayName: 営業開始日
+        nullable: true
+      is_chain_shop:
+        type: Boolean
+        displayName: JOVY加盟
+        nullable: false
+        default: false
+      company:
+        type: Association
+        displayName: 会社
+        nullable: true
+        relation: ManyToOne
+        target: Company
+        inversedBy: shops
+      created_by:
+        type: Association
+        displayName: レコード作成者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: created_shops
+      updated_by:
+        type: Association
+        displayName: レコード更新者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: updated_shops
+      assets:
+        type: Association
+        displayName: 資産
+        relation: OneToMany
+        target: Asset
+        mappedBy: shop
+      asset_movements_from:
+        type: Association
+        displayName: 資産移動履歴（移動元）
+        relation: OneToMany
+        target: AssetMovement
+        mappedBy: from_shop
+      asset_movements_to:
+        type: Association
+        displayName: 資産移動履歴（移動先）
+        relation: OneToMany
+        target: AssetMovement
+        mappedBy: to_shop
+  Thread:
+    name: Thread
+    kind: object
+    properties:
+      id:
+        type: Id
+        displayName: ID
+      threadable_type:
+        type: String
+        displayName: 対象タイプ
+        nullable: false
+        length: 100
+      threadable_id:
+        type: BigInt
+        displayName: 対象ID
+        nullable: false
+      title:
+        type: String
+        displayName: タイトル
+        nullable: true
+        length: 255
+      status:
+        type: Enum
+        displayName: 状態
+        nullable: false
+        default: NOT_ADDRESSED
+        enum:
+          - value: NOT_ADDRESSED
+            label: 未対応
+          - value: IN_PROGRESS
+            label: 対応中
+          - value: ADDRESSED
+            label: 対応済
+          - value: COMPLETED
+            label: 完了
+          - value: AUTO
+            label: 自動
+      assignee:
+        type: Association
+        displayName: 担当者
+        nullable: true
+        relation: ManyToOne
+        target: User
+        inversedBy: assigned_threads
+      due_date:
+        type: Date
+        displayName: 対応期限
+        nullable: true
+      created_by:
+        type: Association
+        displayName: 作成者
+        nullable: false
+        relation: ManyToOne
+        target: User
+        inversedBy: created_threads
+      tags:
+        type: Association
+        displayName: タグ
+        relation: ManyToMany
+        target: CommentTag
+        inversedBy: threads
+      comments:
+        type: Association
+        displayName: コメント
+        relation: OneToMany
+        target: Comment
+        mappedBy: thread
+  User:
+    name: User
+    kind: object
+    properties:
+      name:
+        type: JapanPersonName
+        displayName: 名前
+        nullable: false
+      name_romaji_lastname:
+        type: String
+        displayName: 名前（ローマ字姓）
+        nullable: true
+        length: 255
+      name_romaji_firstname:
+        type: String
+        displayName: 名前（ローマ字名）
+        nullable: true
+        length: 255
+      email:
+        type: Email
+        displayName: メールアドレス
+        nullable: false
+      user_group:
+        type: Association
+        displayName: ユーザーグループ
+        nullable: true
+        relation: ManyToOne
+        target: UserGroup
+        inversedBy: users
+      email_verified_at:
+        type: Timestamp
+        displayName: メール確認日時
+        nullable: true
+      password:
+        type: Password
+        displayName: パスワード
+        nullable: false
+        length: 255
+      remember_token:
+        type: String
+        displayName: リメンバートークン
+        nullable: true
+        length: 100
+      asset_movements:
+        type: Association
+        displayName: 資産移動履歴
+        relation: OneToMany
+        target: AssetMovement
+        mappedBy: created_by
+      application_form_internal_comments:
+        type: Association
+        displayName: 作成したコメント
+        relation: OneToMany
+        target: ApplicationFormInternalComment
+        mappedBy: created_by
+      assigned_application_form_comments:
+        type: Association
+        displayName: 担当コメント
+        relation: OneToMany
+        target: ApplicationFormInternalComment
+        mappedBy: assignee
+    options:
+      softDelete: true
+      authenticatable: true
+      indexes:
+        - columns: email
+          unique: true
+          name: unique_0
+  UserGroup:
+    name: UserGroup
+    kind: object
+    properties:
+      code:
+        type: String
+        displayName: グループコード
+        nullable: false
+        unique: true
+        length: 50
+      name:
+        type: String
+        displayName: グループ名
+        nullable: false
+        length: 255
+      description:
+        type: String
+        displayName: 説明
+        nullable: true
+        length: 500
+      users:
+        type: Association
+        displayName: ユーザー
+        relation: OneToMany
+        target: User
+        mappedBy: user_group

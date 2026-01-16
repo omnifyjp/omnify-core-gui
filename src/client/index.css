@@ -1,0 +1,63 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Code styling */
+pre,
+code {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Fira Mono', 'Roboto Mono',
+    monospace;
+}
+
+/* Changed row highlighting */
+.row-changed > td {
+  background-color: #fffbe6 !important;
+}
+
+.row-new > td {
+  background-color: #f6ffed !important;
+}
+
+/* Dark mode support */
+.ant-theme-dark .row-changed > td {
+  background-color: rgba(250, 173, 20, 0.15) !important;
+}
+
+.ant-theme-dark .row-new > td {
+  background-color: rgba(82, 196, 26, 0.15) !important;
+}

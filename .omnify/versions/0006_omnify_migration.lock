@@ -1,0 +1,85 @@
+version: 6
+timestamp: "2026-01-03T09:50:11.768Z"
+driver: mysql
+migration: 20260103095011_omnify_migration
+changes:
+  - action: index_added
+    schema: Post
+    to:
+      columns:
+        - content
+        - title
+      unique: true
+  - action: index_removed
+    schema: Post
+    from:
+      columns:
+        - content
+        - title
+      unique: true
+      name: unique_0
+snapshot:
+  Post:
+    name: Post
+    kind: object
+    properties:
+      title:
+        type: String
+      content:
+        type: LongText
+      published:
+        type: Boolean
+        default: "false"
+      author:
+        type: Association
+        relation: ManyToOne
+        target: User
+    options:
+      timestamps: true
+      softDelete: false
+      indexes:
+        - columns:
+            - title
+          unique: false
+        - columns:
+            - content
+            - title
+          unique: true
+  Status:
+    name: Status
+    kind: enum
+    values:
+      - value: draft
+        label: Nháp
+      - value: pending
+      - value: published
+      - value: archived
+    options:
+      id: true
+      idType: BigInt
+      timestamps: false
+      softDelete: false
+  User:
+    name: User
+    kind: object
+    properties:
+      name:
+        type: String
+        length: 22
+      email:
+        type: Email
+        unique: true
+      password:
+        type: Password
+      avatar:
+        type: File
+        nullable: true
+    options:
+      timestamps: true
+      softDelete: true
+      indexes:
+        - columns:
+            - email
+            - name
+          unique: true
+          type: btree
