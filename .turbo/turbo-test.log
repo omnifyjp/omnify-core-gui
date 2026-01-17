@@ -1,15 +1,15 @@
 
-> @famgia/omnify-gui@1.0.27 test /Users/f.satoshi/Herd/omnify-ts/packages/omnify-core-gui
+> @famgia/omnify-gui@1.0.28 test /Users/f.satoshi/Herd/omnify-ts/packages/omnify-core-gui
 > vitest run
 
 
- RUN  v1.6.1 /Users/f.satoshi/Herd/omnify-ts/packages/omnify-core-gui
+[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90m/Users/f.satoshi/Herd/omnify-ts/packages/omnify-core-gui[39m
 
- ✓ src/shared/schemaDefaults.test.ts  (19 tests) 4ms
- ✓ src/shared/validation.test.ts  (62 tests) 9ms
+ [32m✓[39m src/shared/schemaDefaults.test.ts [2m ([22m[2m19 tests[22m[2m)[22m[90m 4[2mms[22m[39m
+ [32m✓[39m src/shared/validation.test.ts [2m ([22m[2m62 tests[22m[2m)[22m[90m 7[2mms[22m[39m
 
- Test Files  2 passed (2)
-      Tests  81 passed (81)
-   Start at  11:39:55
-   Duration  682ms (transform 94ms, setup 0ms, collect 104ms, tests 13ms, environment 0ms, prepare 455ms)
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m81 passed[39m[22m[90m (81)[39m
+[2m   Start at [22m 16:24:59
+[2m   Duration [22m 269ms[2m (transform 58ms, setup 0ms, collect 77ms, tests 11ms, environment 0ms, prepare 140ms)[22m
 
