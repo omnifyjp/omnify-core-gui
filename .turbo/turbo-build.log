@@ -22,7 +22,7 @@ computing gzip size...
 ../../dist/client/assets/index-C2Z5gRc8.js              400.94 kB │ gzip: 122.92 kB │ map: 1,688.98 kB
 ../../dist/client/assets/vendor-codemirror-BmwCnRVq.js  416.01 kB │ gzip: 136.27 kB │ map: 1,864.28 kB
 ../../dist/client/assets/vendor-antd-BBx18Sww.js        966.39 kB │ gzip: 301.73 kB │ map: 4,315.20 kB
-✓ built in 4.99s
+✓ built in 4.91s
 
 > @famgia/omnify-gui@1.0.27 build:server /Users/f.satoshi/Herd/omnify-ts/packages/omnify-core-gui
 > tsup
@@ -38,5 +38,5 @@ ESM dist/server/index.js     52.20 KB
 ESM dist/server/index.js.map 113.53 KB
 ESM ⚡️ Build success in 23ms
 DTS Build start
-DTS ⚡️ Build success in 1054ms
+DTS ⚡️ Build success in 1042ms
 DTS dist/server/index.d.ts 13.00 B
