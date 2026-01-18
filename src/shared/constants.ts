@@ -90,4 +90,5 @@ export const PIVOT_FIELD_TYPES = [
   'Time',
   'Timestamp',
   'Json',
+  'Enum',
 ] as const;

@@ -1,4 +1,5 @@
 
-> @famgia/omnify-gui@1.0.30 typecheck /Users/f.satoshi/Herd/omnify-ts/packages/omnify-core-gui
+
+> @famgia/omnify-gui@1.0.31 typecheck /Users/f.satoshi/Herd/omnify-ts/packages/omnify-core-gui
 > tsc --noEmit
 
