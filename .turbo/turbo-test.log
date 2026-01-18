@@ -1,5 +1,5 @@
 
-> @famgia/omnify-gui@1.0.28 test /Users/f.satoshi/Herd/omnify-ts/packages/omnify-core-gui
+> @famgia/omnify-gui@1.0.29 test /Users/f.satoshi/Herd/omnify-ts/packages/omnify-core-gui
 > vitest run
 
 
@@ -10,6 +10,6 @@
 
 [2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
 [2m      Tests [22m [1m[32m81 passed[39m[22m[90m (81)[39m
-[2m   Start at [22m 16:24:59
-[2m   Duration [22m 269ms[2m (transform 58ms, setup 0ms, collect 77ms, tests 11ms, environment 0ms, prepare 140ms)[22m
+[2m   Start at [22m 12:00:04
+[2m   Duration [22m 242ms[2m (transform 53ms, setup 0ms, collect 67ms, tests 11ms, environment 0ms, prepare 128ms)[22m
 
