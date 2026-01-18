@@ -1,6 +1,6 @@
 {
   "name": "@famgia/omnify-gui",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Visual GUI for Omnify schema configuration",
   "type": "module",
   "main": "./dist/server/index.js",
